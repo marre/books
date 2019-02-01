@@ -1,7 +1,10 @@
 package org.marre.books.config;
 
-import com.github.fakemongo.Fongo;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import de.bwaldvogel.mongo.MongoServer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
@@ -13,17 +16,25 @@ import java.util.Collections;
 @Configuration
 @EnableMongoRepositories(basePackages = "org.marre.books.repository")
 @PropertySource("classpath:application.properties")
-public class MongoConfig extends AbstractMongoConfiguration {
+public class MongoClientConfig extends AbstractMongoConfiguration {
+    private final MongoServer mongoServer;
+
+    @Autowired
+    public MongoClientConfig(MongoServer mongoServer) {
+        this.mongoServer = mongoServer;
+    }
 
     @Override
     protected String getDatabaseName() {
         return "demo-test";
     }
 
+    @Bean(destroyMethod="close")
     @Override
-    public Mongo mongo() {
-        // uses fongo for in-memory tests
-        return new Fongo("mongo-test").getMongo();
+    public MongoClient mongoClient() {
+        var serverAddress = mongoServer.getLocalAddress();
+
+        return new MongoClient(new ServerAddress(serverAddress));
     }
 
     @Override

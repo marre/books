@@ -29,14 +29,19 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/books")
 @Validated
 public class BookController {
+    private final BookService bookService;
+
     @Autowired
-    private BookService bookService;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @RequestMapping(
             value = "/",
@@ -79,12 +84,8 @@ public class BookController {
     public ResponseEntity<Book> findById(
             @PathVariable(value="id") UUID id
     ) {
-        Book book = bookService.findById(id);
-        if (book == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return ResponseEntity.ok(book);
+        Optional<Book> book = bookService.findById(id);
+        return ResponseEntity.of(book);
     }
 
     @RequestMapping(

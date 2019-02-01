@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class BookService {
+    private final BookRepository bookRepository;
+
     @Autowired
-    private BookRepository bookRepository;
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     public Book add(BookPrototype bookPrototype) {
         Book book = bookPrototype.createBook();
@@ -23,8 +28,8 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book findById(UUID id) {
-        return bookRepository.findOne(id);
+    public Optional<Book> findById(UUID id) {
+        return bookRepository.findById(id);
     }
 
     public List<Book> findByIsbn(String isbn) {

@@ -5,10 +5,10 @@
 Simple demo on how to build a REST API with Spring Boot
 
 Features:
-  * Spring Boot
+  * Spring Boot 2.1
     * Spring Data Mongo
     * Spring Validation
-  * Fongo (kind of "in memory mongo")
+  * mongo-java-server with "in memory storage"
   * Swagger
   
 Things to investigate further:
